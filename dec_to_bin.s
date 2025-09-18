@@ -17,49 +17,35 @@
 
   .global _start
   _start:
-    call print_prompt
-    
-    # get decimal from the user
-    la a7, SYS_READ
-    la a0, STDIN
-    la a1, user_input
-
-    li a2, BUFSZ
-    ecall
-    blez a0, exit_ok     # if a0 <= 0, exit
-
-    call print_output_number_p1
-    call print_output_number_p2
-    call exit_ok
-
-  print_prompt:
     la a7, SYS_WRITE
     la a0, STDOUT
 
     la a1, prompt_string
     li a2, 16
     ecall
-    ret
+  get_decimal:
+    la a7, SYS_READ
+    la a0, STDIN
 
-  print_output_number_p1:
+    la a1, user_input
+    li a2, BUFSZ
+    ecall
+  print_message:
     la a7, SYS_WRITE
     la a0, STDOUT
     
     la a1, result_string
     li a2, 9
     ecall
-    ret
-
-  print_output_number_p2:
+  print_message_output:
     la a7, SYS_WRITE
     la a0, STDOUT
     
     la a1, user_input
     li a2, BUFSZ
     ecall
-    ret
-
   exit_ok:
     li   a7, 93           # SYS_exit
     li   a0, 0            # status = 0
     ecall
+
