@@ -1,23 +1,6 @@
-.data
-my_string: .ascii "13345\0"  # Input string with null terminator
-
 .text
-.global _start
-_start:
-    # Load address of the string into a0
-    la a0, my_string
-    # Call the atoi_helper function
-    call atoi_helper
-
-    # Exit program (example)
-    li   a7, 93
-    li   a0, 0
-    ecall
-
-# Function to convert string to integer (atoi)
-# Input: a0 = pointer to the null-terminated string
-# Output: a1 = the resulting integer
-atoi_helper:
+.global atoi
+atoi:
     mv a1, zero       # Initialize result to 0
     li t0, '0'        # ASCII value of '0'
     li t1, 10         # Constant 10 for multiplication
