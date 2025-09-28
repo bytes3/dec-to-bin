@@ -22,7 +22,7 @@ atoi:
 
     # Move to next character
     # Step to the next ascii memory position
-    # EX: 70029 (1xxxx) -> 70030 (x3xxx), from my_string "13345"
+    # EX: 70029 (1xxxx) -> 70030 (x3xxx), from ex. string "13345"
     addi a0, a0, 1 
 
     j .loop           # Jump back to loop start
