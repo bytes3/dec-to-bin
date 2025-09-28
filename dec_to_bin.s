@@ -30,7 +30,7 @@
   convert_ascii_to_decimal:
     la a0, decimal
     call atoi
-  calc:
+  convert_number_to_binary:
     mv t0, a0 # decimal number
     li t1, 0  # LSB value
 
@@ -38,10 +38,30 @@
     li t3, 7 # index current number
     .loop:
       srl t1, t0, t3 # decimal num >> index number
-      andi t1, t1, 1 # bit mask to get the LSB value
+      andi t1, t1, 1 # bit mask 1 to get the LSB value
 
+      addi sp, sp, -16
+      sd t0, 0(sp)
+      sd t1, 8(sp)
+
+      mv a0, t1
+      call butil
+
+      ld t0, 0(sp)
+      ld t1, 8(sp)
+      addi sp, sp, 16
+
+      # buf[count]
+      addi sp, sp, -8
+      sd a0, 0(sp)
+
+      la a7, SYS_WRITE
+      la a0, STDOUT
+      addi a1, sp, 0
+      li a2, 1
+      ecall
+        
       sub t3, t3, t2 # t3--
-
       bgez t3, .loop
   exit_ok:
     li   a7, 93           # SYS_exit

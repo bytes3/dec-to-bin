@@ -8,7 +8,8 @@ default:
 	# riscv64-linux-gnu-gcc -ggdb -static -o sum sum.c
 
 	riscv64-linux-gnu-as -g atoi.s -o atoi.o
+	riscv64-linux-gnu-as -g butil.s -o butil.o
 	riscv64-linux-gnu-as -g dec_to_bin.s -o dec_to_bin.o
 
-	riscv64-linux-gnu-gcc -o dec_to_bin atoi.o dec_to_bin.o -nostdlib -static -g -ggdb
+	riscv64-linux-gnu-gcc -o dec_to_bin atoi.o butil.o dec_to_bin.o -nostdlib -static -g -ggdb
 
