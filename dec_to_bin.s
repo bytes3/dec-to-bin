@@ -58,9 +58,10 @@
       la a7, SYS_WRITE
       la a0, STDOUT
       addi a1, sp, 0
+      addi sp, sp, 8
       li a2, 1
       ecall
-        
+      
       sub t3, t3, t2 # t3--
       bgez t3, .loop
   exit_ok:
