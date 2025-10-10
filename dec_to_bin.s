@@ -50,12 +50,12 @@
   convert_number_to_binary:
     mv t0, a0             # decimal number
     li t1, 0              # LSB value
+    li t2, 63             # index current number
+    li t3, -1             # should loop again if less then -1
+    li a1, 0              # should print the binary
 
-    li t3, 63             # index current number
-    li t4, -1
-    li a1, 0
     .loop:
-      srl t1, t0, t3      # decimal num >> index number
+      srl t1, t0, t2      # decimal num >> index number
       andi t1, t1, 1      # bit mask 1 to get the LSB value
 
       mv a0, t1
@@ -63,16 +63,15 @@
 
       blez a1, .loop_again
 
-      # fixme: print the LSB after t0 = 0 index
       push a1
       call .print_number
       pop a1
 
-      bge t3, t4, .loop_again
+      bgez t2, .loop_again
 
   .loop_again:
-    addi t3, t3, -1    # t3--
-    ble t3, t4, exit_ok
+    addi t2, t2, -1    # t2--
+    ble t2, t3, exit_ok
     j .loop
 
   .print_number:
