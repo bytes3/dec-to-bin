@@ -1,9 +1,21 @@
+.macro push, reg
+  addi sp, sp, -8
+  sd \reg, 0(sp)
+.endm
+
+.macro pop, reg
+  ld \reg, 0(sp)
+  addi sp, sp, 8
+.endm
+
+# ----------------------------------
 .section .bss
   .equ DECSZ, 1024
   decimal: .skip DECSZ
 
 .section .rodata
-  prompt_string: .ascii "Decimal number: "
+  prompt_string: .asciz "Decimal number: "
+    promnt_len = . - prompt_string - 1
 
 .section .text
   .equ SYS_WRITE, 64
@@ -14,6 +26,11 @@
 
   .global _start
   _start:
+    .option push
+    .option norelax
+      la gp, __global_pointer$
+    .option pop
+
     la a7, SYS_WRITE
     la a0, STDOUT
 
@@ -31,41 +48,48 @@
     la a0, decimal
     call atoi
   convert_number_to_binary:
-    mv t0, a0 # decimal number
-    li t1, 0  # LSB value
+    mv t0, a0             # decimal number
+    li t1, 0              # LSB value
 
-    li t2, 1 # for sub, decreased by 1
-    li t3, 7 # index current number
+    li t3, 63             # index current number
+    li t4, -1
+    li a1, 0
     .loop:
-      srl t1, t0, t3 # decimal num >> index number
-      andi t1, t1, 1 # bit mask 1 to get the LSB value
-
-      addi sp, sp, -16
-      sd t0, 0(sp)
-      sd t1, 8(sp)
+      srl t1, t0, t3      # decimal num >> index number
+      andi t1, t1, 1      # bit mask 1 to get the LSB value
 
       mv a0, t1
       call butil
 
-      ld t0, 0(sp)
-      ld t1, 8(sp)
-      addi sp, sp, 16
+      blez a1, .loop_again
 
-      # buf[count]
-      addi sp, sp, -8
-      sd a0, 0(sp)
+      # fixme: print the LSB after t0 = 0 index
+      push a1
+      call .print_number
+      pop a1
 
-      la a7, SYS_WRITE
-      la a0, STDOUT
-      addi a1, sp, 0
-      addi sp, sp, 8
-      li a2, 1
-      ecall
-      
-      sub t3, t3, t2 # t3--
-      bgez t3, .loop
+      bge t3, t4, .loop_again
+
+  .loop_again:
+    addi t3, t3, -1    # t3--
+    ble t3, t4, exit_ok
+    j .loop
+
+  .print_number:
+    # buf[count]
+    push a0
+
+    la a7, SYS_WRITE
+    la a0, STDOUT
+    mv a1, sp
+
+    li a2, 1
+    ecall
+    pop a0
+    ret
+
   exit_ok:
-    li   a7, 93           # SYS_exit
-    li   a0, 0            # status = 0
+    li   a7, 93   # SYS_exit
+    li   a0, 0    # status = 0
     ecall
 

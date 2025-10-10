@@ -10,4 +10,5 @@ butil:
 
   .one:
     li a0, '1'
+    li a1, 1
     ret
