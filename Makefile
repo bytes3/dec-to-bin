@@ -13,3 +13,6 @@ default:
 
 	riscv64-linux-gnu-gcc -o dec_to_bin atoi.o butil.o dec_to_bin.o -nostdlib -static -g -ggdb
 
+	riscv64-linux-gnu-as -g chars_test.s -o chars_test.o
+	riscv64-linux-gnu-gcc -o chars_test chars_test.o -nostdlib -static -g -ggdb
+

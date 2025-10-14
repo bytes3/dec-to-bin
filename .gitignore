@@ -1,4 +1,3 @@
-Makefile
 dec_to_bin.s
 *.o
 tf.s
