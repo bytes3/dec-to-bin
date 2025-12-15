@@ -1,4 +1,4 @@
-### Simple Decimal-to-Binary Converter
+# Simple Decimal-to-Binary Converter
 
 This project is a decimal-to-binary converter implemented in RISC-V assembly.
 
