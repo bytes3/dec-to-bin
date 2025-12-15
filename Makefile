@@ -1,18 +1,25 @@
+BUILDDIR=build
+BUILD_BIN_DIR=build/bin
+
 .SILENT:
+
 default:
-	rm -f ./dec_to_bin
+	rm -f $(BUILD_BIN_DIR)/dec_to_bin
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILD_BIN_DIR)
 
-	# riscv64-linux-gnu-as hello.s -o hello.o
-	# riscv64-linux-gnu-gcc -o hello hello.o -nostdlib -static -g -ggdb
+	riscv64-linux-gnu-as -g atoi.s -o $(BUILDDIR)/atoi.o
+	riscv64-linux-gnu-as -g butil.s -o $(BUILDDIR)/butil.o
+	riscv64-linux-gnu-as -g dec_to_bin.s -o $(BUILDDIR)/dec_to_bin.o
 
-	# riscv64-linux-gnu-gcc -ggdb -static -o sum sum.c
+	riscv64-linux-gnu-gcc -o $(BUILD_BIN_DIR)/dec_to_bin \
+		$(BUILDDIR)/atoi.o \
+		$(BUILDDIR)/butil.o \
+		$(BUILDDIR)/dec_to_bin.o \
+		-nostdlib -static -g -ggdb
 
-	riscv64-linux-gnu-as -g atoi.s -o atoi.o
-	riscv64-linux-gnu-as -g butil.s -o butil.o
-	riscv64-linux-gnu-as -g dec_to_bin.s -o dec_to_bin.o
-
-	riscv64-linux-gnu-gcc -o dec_to_bin atoi.o butil.o dec_to_bin.o -nostdlib -static -g -ggdb
-
-	riscv64-linux-gnu-as -g chars_test.s -o chars_test.o
-	riscv64-linux-gnu-gcc -o chars_test chars_test.o -nostdlib -static -g -ggdb
+.PHONY: clean
+clean:
+	rm -fr $(BUILDDIR)
+	echo "All cleared"
 
